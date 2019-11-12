@@ -1,20 +1,22 @@
-package com.nalidao.products.model;
+package com.nalidao.products.controller.dto;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Data
 @NoArgsConstructor
 public class ProdutoDto {
 	
-	@Getter @Setter
+	@NotNull
+	@NotEmpty
 	private String nome;
 	
-	@Getter @Setter
+	@NotNull
 	private double preco;
 	
-	@Getter @Setter
+	@NotNull
 	private int quantidade;
 }

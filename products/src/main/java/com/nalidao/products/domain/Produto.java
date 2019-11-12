@@ -1,4 +1,4 @@
-package com.nalidao.products.model;
+package com.nalidao.products.domain;
 
 import java.io.Serializable;
 
@@ -26,16 +26,12 @@ public class Produto implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Getter
 	private Long id;
 	
-	@Getter @Setter
 	private String nome;
 	
-	@Getter @Setter
 	private double preco;
 	
-	@Getter @Setter
 	private int quantidade;
 	
 	public Produto(String nome, double preco, int quantidade) {

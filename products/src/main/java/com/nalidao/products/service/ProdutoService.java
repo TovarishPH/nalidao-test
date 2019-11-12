@@ -5,43 +5,46 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.nalidao.products.model.Produto;
-import com.nalidao.products.model.ProdutoDto;
-import com.nalidao.products.repository.ProdutoRepository;
+import com.nalidao.products.domain.Produto;
+import com.nalidao.products.gateway.ProdutoGateway;
 
 @Service
 public class ProdutoService {
 	
-	private ProdutoRepository repository;
+	private ProdutoGateway gateway;
 	
-	public ProdutoService(ProdutoRepository repository) {
-		this.repository = repository;
+	public ProdutoService(ProdutoGateway gateway) {
+		this.gateway = gateway;
 	}
-
+	
 	public List<Produto> findAll() {
-		return this.repository.findAll();
+		return this.gateway.findAll();
 	}
 	
 	public Optional<Produto> findById(Long id) {
-		return this.repository.findById(id);
+		return this.gateway.findById(id);
 	}
 	
-	public void create(ProdutoDto produtoDto) {
-		Produto produto = converter(produtoDto);
-		this.repository.save(produto);
+	public void create(Produto produto) {
+		this.gateway.save(produto);
 	}
 	
 	public void remove(Long id) {
-		this.repository.deleteById(id);
+		Optional<Produto> produto = this.gateway.findById(id);
+		if (produto.isPresent()) {
+			this.gateway.deleteById(id);
+		}
 	}
 	
-	public void atualizar(Long id, ProdutoDto dto) {
-		Optional<Produto> produto = this.repository.findById(id);
+	public void atualizar(Long id, Produto produto) {
+		Produto encontrado = this.gateway.getOne(id);
 		
+		if (encontrado != null) {
+			encontrado.setNome(produto.getNome());
+			encontrado.setPreco(produto.getPreco());
+			encontrado.setQuantidade(produto.getQuantidade());
+			this.gateway.save(encontrado);
+		}
 	}
 	
-	private Produto converter(ProdutoDto dto) {
-		return new Produto(dto.getNome(), dto.getPreco(), dto.getQuantidade());
-	}
-
 }
