@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.nalidao.products.domain.Produto;
+import com.nalidao.products.errorhandling.exception.ProdutoNotFoundException;
 import com.nalidao.products.gateway.ProdutoGateway;
 
 @Service
@@ -22,7 +23,11 @@ public class ProdutoService {
 	}
 	
 	public Optional<Produto> findById(Long id) {
-		return this.gateway.findById(id);
+		Optional<Produto> produto = this.gateway.findById(id);
+		if (produto.isPresent()) {
+			return produto;
+		}
+		throw new ProdutoNotFoundException("Produto id: " + id + " não encontrado.");
 	}
 	
 	public void create(Produto produto) {

@@ -38,7 +38,6 @@ public class ProdutoController {
 	
 	@GetMapping("/{id}")
 	public Produto buscaPorId(@PathVariable Long id) {
-		//tratar NoSuchElementException/NotFoundException
 		return this.service.findById(id).get();
 	}
 	
