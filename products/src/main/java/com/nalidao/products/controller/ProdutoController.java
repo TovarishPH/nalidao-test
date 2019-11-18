@@ -58,7 +58,7 @@ public class ProdutoController {
 	
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<ProdutoDto> atualizar(@PathVariable Long id, @RequestBody ProdutoDto produtoDto) {
+	public ResponseEntity<ProdutoDto> atualizar(@PathVariable Long id, @RequestBody @Valid ProdutoDto produtoDto) {
 		Produto produto = this.converter.convert(produtoDto);
 		this.service.atualizar(id, produto);
 		return ResponseEntity.ok(produtoDto);
