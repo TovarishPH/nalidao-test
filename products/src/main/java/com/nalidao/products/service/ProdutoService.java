@@ -3,6 +3,8 @@ package com.nalidao.products.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 
 import com.nalidao.products.domain.Produto;
@@ -38,18 +40,25 @@ public class ProdutoService {
 		Optional<Produto> produto = this.gateway.findById(id);
 		if (produto.isPresent()) {
 			this.gateway.deleteById(id);
+		} else { 
+			throw new ProdutoNotFoundException("Deleção não efetuada. Produto id " + id + " não encontrado na base de dados.");
 		}
 	}
 	
 	public void atualizar(Long id, Produto produto) {
-		Produto encontrado = this.gateway.getOne(id);
-		
-		if (encontrado != null) {
-			encontrado.setNome(produto.getNome());
-			encontrado.setPreco(produto.getPreco());
-			encontrado.setQuantidade(produto.getQuantidade());
-			this.gateway.save(encontrado);
+		try {
+			Produto encontrado = this.gateway.getOne(id);
+			
+			if (encontrado.getId() != null) {
+				encontrado.setNome(produto.getNome());
+				encontrado.setPreco(produto.getPreco());
+				encontrado.setQuantidade(produto.getQuantidade());
+				this.gateway.save(encontrado);
+			}			
+		} catch (EntityNotFoundException e) {
+			throw new ProdutoNotFoundException("Atualização não efetuada. Produto id: " + id + " não encontrado.");
 		}
+		
 	}
 	
 }

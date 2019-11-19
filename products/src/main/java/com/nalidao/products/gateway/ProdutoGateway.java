@@ -3,12 +3,12 @@ package com.nalidao.products.gateway;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.nalidao.products.domain.Produto;
 import com.nalidao.products.repository.ProdutoRepository;
 
-@Service
+@Component
 public class ProdutoGateway {
 
 	private ProdutoRepository repository;
