@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nalidao.products.controller.converter.EntityToProductDto;
 import com.nalidao.products.controller.converter.ProductDtoToEntityConverter;
 import com.nalidao.products.controller.dto.ProductDto;
 import com.nalidao.products.domain.Product;
@@ -30,6 +31,9 @@ public class ProductController {
 	
 	@Autowired
 	private ProductDtoToEntityConverter converterToEntity;
+	
+	@Autowired
+	private EntityToProductDto convertToDto;
 	
 	@GetMapping
 	public List<Product> findAllProducts() {
@@ -46,6 +50,7 @@ public class ProductController {
 	public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductDto productDto) {
 		Product product = this.converterToEntity.convert(productDto);
 		this.service.save(product);
+		productDto = this.convertToDto.convert(product);
 		return ResponseEntity.ok(productDto);
 	}
 	
@@ -53,14 +58,15 @@ public class ProductController {
 	@Transactional
 	public ResponseEntity<?> removeProduct(@PathVariable Long id) {
 		this.service.remove(id);
-		return ResponseEntity.ok("Produto removido da base de dados.");
+		return ResponseEntity.ok("Action accomplisehd. Product id " + id + " was deleted from database.");
 	}
 	
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductDto productDto) {
 		Product product = this.converterToEntity.convert(productDto);
-		this.service.update(id, product);
+		product = this.service.update(id, product);
+		productDto = this.convertToDto.convert(product);
 		return ResponseEntity.ok(productDto);
 	}
 }

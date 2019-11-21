@@ -37,17 +37,17 @@ public class ProductService {
 	}
 	
 	public void remove(Long id) {
-		Optional<Product> produto = this.gateway.findById(id);
-		if (produto.isPresent()) {
+		Optional<Product> product = this.gateway.findById(id);
+		if (product.isPresent()) {
 			this.gateway.deleteById(id);
 		} else { 
 			throw new ProductNotFoundException("Delete not accomplished. Product id " + id + " not found in our data base.");
 		}
 	}
 	
-	public void update(Long id, Product product) {
+	public Product update(Long id, Product product) {
 		try {
-			Product dbProduct = this.gateway.getOne(id);
+			Product dbProduct = this.gateway.findById(id).get();
 			
 			if (dbProduct.getId() != null) {
 				dbProduct.setName(product.getName());
@@ -55,6 +55,8 @@ public class ProductService {
 				dbProduct.setAmount(product.getAmount());
 				this.gateway.save(dbProduct);
 			}			
+			return product;
+			
 		} catch (EntityNotFoundException e) {
 			throw new ProductNotFoundException("Update not accomplished. Product id: " + id + " not found.");
 		}
