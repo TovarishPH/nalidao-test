@@ -17,29 +17,29 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.nalidao.products.domain.Produto;
-import com.nalidao.products.errorhandling.exception.ProdutoNotFoundException;
-import com.nalidao.products.gateway.ProdutoGateway;
-import com.nalidao.products.repository.ProdutoRepository;
+import com.nalidao.products.domain.Product;
+import com.nalidao.products.errorhandling.exception.ProductNotFoundException;
+import com.nalidao.products.gateway.ProductGateway;
+import com.nalidao.products.repository.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class ProdutoServiceTest {
 	
 	@InjectMocks
-	private ProdutoService service;
+	private ProductService service;
 	
 	@InjectMocks
-	private ProdutoGateway gateway;
+	private ProductGateway gateway;
 	
 	@Mock
-	private ProdutoRepository repository;
+	private ProductRepository repository;
 	
-	private List<Produto> produtos;
+	private List<Product> produtos;
 	
 	@BeforeEach
 	public void init() {
-		this.service = new ProdutoService(gateway);
-		this.gateway = new ProdutoGateway(repository);
+		this.service = new ProductService(gateway);
+		this.gateway = new ProductGateway(repository);
 		
 		this.produtos = this.getListDeProdutosMock();
 	}
@@ -55,7 +55,7 @@ public class ProdutoServiceTest {
 	
 	@Test
 	public void testFindById() {
-		Produto produto = this.getProduto();
+		Product produto = this.getProduto();
 		
 		when(this.repository.findById(1l)).thenReturn(Optional.of(produto));
 		when(this.gateway.findById(1l)).thenReturn(Optional.of(produto));
@@ -76,22 +76,22 @@ public class ProdutoServiceTest {
 //		assertEquals(3, this.produtos.size());
 	}
 	
-	private List<Produto> getListDeProdutosMock() {
-		List<Produto> produtos = new ArrayList<Produto>();
+	private List<Product> getListDeProdutosMock() {
+		List<Product> produtos = new ArrayList<Product>();
 		
-		Produto p1 = new Produto("Produto 1", 1.5, 5);
+		Product p1 = new Product("Produto 1", 1.5, 5);
 		p1.setId(1l);
 		produtos.add(p1);
 		
-		Produto p2 = new Produto("Produto 2", 3.5, 2);
+		Product p2 = new Product("Produto 2", 3.5, 2);
 		p2.setId(2l);
 		produtos.add(p2);
 		
 		return produtos;
 	}
 	
-	private Produto getProduto() {
-		Produto p = new Produto("Produto", 100.5, 10);
+	private Product getProduto() {
+		Product p = new Product("Produto", 100.5, 10);
 		p.setId(1l);
 		
 		return p;

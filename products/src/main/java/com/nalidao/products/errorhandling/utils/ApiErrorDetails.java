@@ -9,18 +9,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ApiErrorDetails {
 
-	private String titulo;
+	private String title;
 	private String status;
-	private String mensagem;
-	private String pacote;
+	private String message;
+	private String packagePath;
 	private LocalDateTime timestamp;
 
-	public ApiErrorDetails(String titulo, String status, String mensagem, String pacote, LocalDateTime timestamp) {
+	public ApiErrorDetails(String title, String status, String message, String packagePath, LocalDateTime timestamp) {
 		super();
-		this.titulo = titulo;
+		this.title = title;
 		this.status = status;
-		this.mensagem = mensagem;
-		this.pacote = pacote;
+		this.message = message;
+		this.packagePath = packagePath;
 		this.timestamp = timestamp;
 	}
 

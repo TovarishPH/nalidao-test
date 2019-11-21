@@ -16,51 +16,51 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nalidao.products.controller.converter.ProdutoDtoToEntityConverter;
-import com.nalidao.products.controller.dto.ProdutoDto;
-import com.nalidao.products.domain.Produto;
-import com.nalidao.products.service.ProdutoService;
+import com.nalidao.products.controller.converter.ProductDtoToEntityConverter;
+import com.nalidao.products.controller.dto.ProductDto;
+import com.nalidao.products.domain.Product;
+import com.nalidao.products.service.ProductService;
 
 @RestController
-@RequestMapping("/produto-api")
-public class ProdutoController {
+@RequestMapping("/product-api")
+public class ProductController {
 
 	@Autowired
-	private ProdutoService service;
+	private ProductService service;
 	
 	@Autowired
-	private ProdutoDtoToEntityConverter converter;
+	private ProductDtoToEntityConverter converterToEntity;
 	
 	@GetMapping
-	public List<Produto> buscaProdutos() {
+	public List<Product> findAllProducts() {
 		return this.service.findAll();
 	}
 	
 	@GetMapping("/{id}")
-	public Produto buscaPorId(@PathVariable Long id) {
+	public Product findProductById(@PathVariable Long id) {
 		return this.service.findById(id).get();
 	}
 	
 	@PostMapping
 	@Transactional
-	public ResponseEntity<ProdutoDto> cadastraProduto(@RequestBody @Valid ProdutoDto produtoDto) {
-		Produto produto = this.converter.convert(produtoDto);
-		this.service.create(produto);
-		return ResponseEntity.ok(produtoDto);
+	public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductDto productDto) {
+		Product product = this.converterToEntity.convert(productDto);
+		this.service.save(product);
+		return ResponseEntity.ok(productDto);
 	}
 	
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> removerProduto(@PathVariable Long id) {
+	public ResponseEntity<?> removeProduct(@PathVariable Long id) {
 		this.service.remove(id);
 		return ResponseEntity.ok("Produto removido da base de dados.");
 	}
 	
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<ProdutoDto> atualizar(@PathVariable Long id, @RequestBody @Valid ProdutoDto produtoDto) {
-		Produto produto = this.converter.convert(produtoDto);
-		this.service.atualizar(id, produto);
-		return ResponseEntity.ok(produtoDto);
+	public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductDto productDto) {
+		Product product = this.converterToEntity.convert(productDto);
+		this.service.update(id, product);
+		return ResponseEntity.ok(productDto);
 	}
 }

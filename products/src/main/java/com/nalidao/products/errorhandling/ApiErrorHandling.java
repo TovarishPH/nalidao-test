@@ -11,17 +11,17 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.nalidao.products.errorhandling.exception.ProdutoNotFoundException;
+import com.nalidao.products.errorhandling.exception.ProductNotFoundException;
 import com.nalidao.products.errorhandling.utils.ApiErrorDetails;
 import com.nalidao.products.errorhandling.utils.FormErrorDetails;
 
 @ControllerAdvice
 public class ApiErrorHandling {
 	
-	@ExceptionHandler(ProdutoNotFoundException.class)
-	private ResponseEntity<ApiErrorDetails> handleProdutoNotFoundException(ProdutoNotFoundException e) {
+	@ExceptionHandler(ProductNotFoundException.class)
+	private ResponseEntity<ApiErrorDetails> handleProdutoNotFoundException(ProductNotFoundException e) {
 		ApiErrorDetails details = new ApiErrorDetails(
-				                      "Produto não encontrado",
+				                      "Product not found.",
 				                      HttpStatus.NOT_FOUND.toString(),
 				                      e.getLocalizedMessage(),
 				                      e.getClass().getPackage().toString(),
@@ -32,21 +32,21 @@ public class ApiErrorHandling {
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	private ResponseEntity<List<FormErrorDetails>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-		List<FormErrorDetails> detalhes = new ArrayList<FormErrorDetails>();
+		List<FormErrorDetails> details = new ArrayList<FormErrorDetails>();
 		
-		List<FieldError> campos = e.getBindingResult().getFieldErrors();
-		campos.forEach(campo -> {
-			FormErrorDetails detalhe = new FormErrorDetails(
-											"Erro de formulário",
+		List<FieldError> fields = e.getBindingResult().getFieldErrors();
+		fields.forEach(field -> {
+			FormErrorDetails detail = new FormErrorDetails(
+											"Form error.",
 											HttpStatus.BAD_REQUEST.toString(),
-											campo.getDefaultMessage(),
+											field.getDefaultMessage(),
 											e.getClass().getPackage().toString(),
 											LocalDateTime.now(),
-											campo.getField());
-			detalhes.add(detalhe);
+											field.getField());
+			details.add(detail);
 		});
 		
-		return new ResponseEntity<List<FormErrorDetails>>(detalhes, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<List<FormErrorDetails>>(details, HttpStatus.BAD_REQUEST);
 	}
 	
 }

@@ -7,12 +7,12 @@ import lombok.Data;
 @Data
 public class FormErrorDetails extends ApiErrorDetails {
 
-	private String campo;
+	private String field;
 
-	public FormErrorDetails(String titulo, String status, String mensagem, String pacote, LocalDateTime timestamp,
-			String campo) {
-		super(titulo, status, mensagem, pacote, timestamp);
-		this.campo = campo;
+	public FormErrorDetails(String title, String status, String message, String packagePath, LocalDateTime timestamp,
+			String field) {
+		super(title, status, message, packagePath, timestamp);
+		this.field = field;
 	}
 
 }
