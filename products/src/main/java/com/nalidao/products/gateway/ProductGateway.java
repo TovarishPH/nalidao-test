@@ -5,31 +5,31 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.nalidao.products.domain.Produto;
-import com.nalidao.products.repository.ProdutoRepository;
+import com.nalidao.products.domain.Product;
+import com.nalidao.products.repository.ProductRepository;
 
 @Component
-public class ProdutoGateway {
+public class ProductGateway {
 
-	private ProdutoRepository repository;
+	private ProductRepository repository;
 	
-	public ProdutoGateway(ProdutoRepository repository) {
+	public ProductGateway(ProductRepository repository) {
 		this.repository = repository;
 	}
 	
-	public List<Produto> findAll() {
+	public List<Product> findAll() {
 		return this.repository.findAll();
 	}
 
-	public Optional<Produto> findById(Long id) {
+	public Optional<Product> findById(Long id) {
 		return this.repository.findById(id);
 	}
 	
-	public Produto getOne(Long id) {
+	public Product getOne(Long id) {
 		return this.repository.getOne(id);
 	}
 	
-	public void save(Produto produto) {
+	public void save(Product produto) {
 		this.repository.save(produto);
 	}
 

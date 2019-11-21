@@ -15,7 +15,7 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @ToString
-public class Produto implements Serializable {
+public class Product implements Serializable {
 
 	/**
 	 * 
@@ -26,16 +26,16 @@ public class Produto implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private String nome;
+	private String name;
 	
-	private double preco;
+	private double price;
 	
-	private int quantidade;
+	private int amount;
 	
-	public Produto(String nome, double preco, int quantidade) {
-		this.nome = nome;
-		this.preco = preco;
-		this.quantidade = quantidade;
+	public Product(String name, double price, int amount) {
+		this.name = name;
+		this.price = price;
+		this.amount = amount;
 	}
 	
 }
