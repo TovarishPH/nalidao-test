@@ -1,8 +1,14 @@
 package com.nalidao.products.service;
 
-import com.nalidao.products.domain.Product;
-import com.nalidao.products.errorhandling.exception.ProductNotFoundException;
-import com.nalidao.products.gateway.ProductGateway;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.Assertions;
@@ -13,14 +19,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
+import com.nalidao.products.domain.Product;
+import com.nalidao.products.errorhandling.exception.ProductNotFoundException;
+import com.nalidao.products.gateway.ProductGateway;
 
 @ExtendWith(MockitoExtension.class)
 public class ProdutoServiceTest {
@@ -63,12 +64,13 @@ public class ProdutoServiceTest {
 	}
 	
 	@Test
-	public void testFindByIdNotFoundException() {
+	public void testFindByIdThrowsException() {
 		Throwable thrown = ThrowableAssert.catchThrowable(() -> {
 			this.service.findById(1l);
 		});
 		
-		assertThat(thrown).isInstanceOf(ProductNotFoundException.class).hasMessage("Product id: 1 not found.");
+		assertThat(thrown).isInstanceOf(ProductNotFoundException.class)
+							.hasMessage("Product id: 1 not found.");
 		
 		//Isso também funciona
 		Assertions.assertThrows(ProductNotFoundException.class, () -> {
@@ -79,11 +81,56 @@ public class ProdutoServiceTest {
 
 	@Test
 	public void testCreate() {
-		//Comparando tamanho da lista depois de executar o método save
+		Product product = this.getProduct();
+		
+		this.service.save(product);
+		Mockito.verify(this.gateway).save(product);
+	}
+	
+	//TODO refazer os tests de Update
+//	@Test
+//	public void testUpdate() {
 //		Product product = this.getProduct();
-//		Assertions.assertThrows(null, () -> {
-//			this.service.save(product);
-//		}, "Different exception launched.");
+//		
+//		when(this.gateway.findById(1l)).thenReturn(Optional.of(product));
+//		
+//		this.service.update(1l, product);
+//		Mockito.verify(this.gateway).save(product);
+//	}
+//	
+//	@Test
+//	public void testUpdateThrowNotFoundException() {
+//		when(this.gateway.findById(1l)).thenReturn(Optional.empty());
+//		
+//		Mockito.doThrow(NoSuchElementException.class).when(this.gateway.findById(1l));
+//		
+//		Throwable thrown = ThrowableAssert.catchThrowable(() -> {
+//			this.service.update(1l, new Product());
+//		});
+//		
+//		assertThat(thrown).isInstanceOf(ProductNotFoundException.class)
+//							.hasMessage("Update not accomplished. Product id: 1 not found.");
+//	}
+	
+	@Test
+	public void testRemoveProduct() {
+		Product product = this.getProduct();
+		
+		when(this.gateway.findById(1l)).thenReturn(Optional.of(product));
+		this.service.remove(1l);
+		Mockito.verify(this.gateway).deleteById(1l);
+	}
+	
+	@Test
+	public void testRemoveThrowNotFoundException() {
+		when(this.gateway.findById(1l)).thenReturn(Optional.empty());
+		
+		Throwable thrown = ThrowableAssert.catchThrowable(() -> {
+			this.service.remove(1l);
+		});
+		
+		assertThat(thrown).isInstanceOf(ProductNotFoundException.class)
+							.hasMessage("Delete not accomplished. Product id 1 not found in our data base.");
 	}
 
 	private List<Product> getProductListMock() {

@@ -13,17 +13,17 @@ import com.nalidao.products.gateway.ProductGateway;
 
 @Service
 public class ProductService {
-	
+
 	private ProductGateway gateway;
-	
+
 	public ProductService(ProductGateway gateway) {
 		this.gateway = gateway;
 	}
-	
+
 	public List<Product> findAll() {
 		return this.gateway.findAll();
 	}
-	
+
 	public Optional<Product> findById(Long id) {
 		Optional<Product> produto = this.gateway.findById(id);
 		if (produto.isPresent()) {
@@ -31,36 +31,34 @@ public class ProductService {
 		}
 		throw new ProductNotFoundException("Product id: " + id + " not found.");
 	}
-	
+
 	public void save(Product product) {
 		this.gateway.save(product);
 	}
-	
+
 	public void remove(Long id) {
 		Optional<Product> product = this.gateway.findById(id);
 		if (product.isPresent()) {
 			this.gateway.deleteById(id);
-		} else { 
-			throw new ProductNotFoundException("Delete not accomplished. Product id " + id + " not found in our data base.");
+		} else {
+			throw new ProductNotFoundException(
+					"Delete not accomplished. Product id " + id + " not found in our data base.");
 		}
 	}
-	
+
 	public Product update(Long id, Product product) {
-		try {
-			Product dbProduct = this.gateway.findById(id).get();
-			
-			if (dbProduct.getId() != null) {
-				dbProduct.setName(product.getName());
-				dbProduct.setPrice(product.getPrice());
-				dbProduct.setAmount(product.getAmount());
-				this.gateway.save(dbProduct);
-			}			
+		Optional<Product> dbProduct = this.gateway.findById(id);
+
+		if (dbProduct.isPresent()) {
+			dbProduct.get().setName(product.getName());
+			dbProduct.get().setPrice(product.getPrice());
+			dbProduct.get().setAmount(product.getAmount());
+			this.gateway.save(dbProduct.get());
 			return product;
-			
-		} catch (EntityNotFoundException e) {
+		} else {
 			throw new ProductNotFoundException("Update not accomplished. Product id: " + id + " not found.");
 		}
-		
+
 	}
-	
+
 }
