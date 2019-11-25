@@ -25,12 +25,8 @@ public class ProductGateway {
 		return this.repository.findById(id);
 	}
 	
-	public Product getOne(Long id) {
-		return this.repository.getOne(id);
-	}
-	
-	public void save(Product produto) {
-		this.repository.save(produto);
+	public void save(Product product) {
+		this.repository.save(product);
 	}
 
 	public void deleteById(Long id) {

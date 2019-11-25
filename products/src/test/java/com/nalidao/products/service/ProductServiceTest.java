@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.assertj.core.api.ThrowableAssert;
@@ -22,20 +20,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.nalidao.products.domain.Product;
 import com.nalidao.products.errorhandling.exception.ProductNotFoundException;
 import com.nalidao.products.gateway.ProductGateway;
+import com.nalidao.products.test.util.TestUtils;
 
 @ExtendWith(MockitoExtension.class)
-public class ProdutoServiceTest {
+public class ProductServiceTest {
 
 	@InjectMocks
 	private ProductService service;
 
 	@Mock
 	private ProductGateway gateway;
+	
+	private TestUtils utils = new TestUtils();
 
 	@Test
 	public void testFindAllProducts() {
 		//Dado uma lista de produtos existentes (given)
-		List<Product> mockList = getProductListMock();
+		List<Product> mockList = this.utils.getProductListMock();
 		when(this.gateway.findAll()).thenReturn(mockList);
 
 		//Quando estes produtos forem consultados (when)
@@ -53,18 +54,19 @@ public class ProdutoServiceTest {
 
 	@Test
 	public void testFindById() {
-		Product product = this.getProduct();
+		Product product = this.utils.getProduct();
+		long id = 1l;
 
-		when(this.gateway.findById(1l)).thenReturn(Optional.of(product));
+		when(this.gateway.findById(id)).thenReturn(Optional.of(product));
 		
 		Product found = this.gateway.findById(1l).get();
 
-		assertThat(this.service.findById(1l)).contains(product);
-		assertSame(found, product);
+		assertThat(this.service.findById(id)).contains(product);
+		assertSame(product, found);
 	}
 	
 	@Test
-	public void testFindByIdThrowsException() {
+	public void testFindByIdThrowsNotFoundException() {
 		Throwable thrown = ThrowableAssert.catchThrowable(() -> {
 			this.service.findById(1l);
 		});
@@ -81,40 +83,38 @@ public class ProdutoServiceTest {
 
 	@Test
 	public void testCreate() {
-		Product product = this.getProduct();
+		Product product = this.utils.getProduct();
 		
 		this.service.save(product);
 		Mockito.verify(this.gateway).save(product);
 	}
 	
-	//TODO refazer os tests de Update
-//	@Test
-//	public void testUpdate() {
-//		Product product = this.getProduct();
-//		
-//		when(this.gateway.findById(1l)).thenReturn(Optional.of(product));
-//		
-//		this.service.update(1l, product);
-//		Mockito.verify(this.gateway).save(product);
-//	}
-//	
-//	@Test
-//	public void testUpdateThrowNotFoundException() {
-//		when(this.gateway.findById(1l)).thenReturn(Optional.empty());
-//		
-//		Mockito.doThrow(NoSuchElementException.class).when(this.gateway.findById(1l));
-//		
-//		Throwable thrown = ThrowableAssert.catchThrowable(() -> {
-//			this.service.update(1l, new Product());
-//		});
-//		
-//		assertThat(thrown).isInstanceOf(ProductNotFoundException.class)
-//							.hasMessage("Update not accomplished. Product id: 1 not found.");
-//	}
+	@Test
+	public void testUpdate() {
+		Product product = this.utils.getProduct();
+		
+		when(this.gateway.findById(1l)).thenReturn(Optional.of(product));
+		
+		this.service.update(1l, product);
+		Mockito.verify(this.gateway).save(product);
+	}
+
+	@Test
+	public void testUpdateThrowNotFoundException() {
+		long id = 1l;
+		when(this.gateway.findById(id)).thenReturn(Optional.empty());
+		
+		Throwable thrown = ThrowableAssert.catchThrowable(() -> {
+			this.service.update(1l, new Product());
+		});
+		
+		assertThat(thrown).isInstanceOf(ProductNotFoundException.class)
+							.hasMessage("Update not accomplished. Product id: " + id + " not found.");
+	}
 	
 	@Test
 	public void testRemoveProduct() {
-		Product product = this.getProduct();
+		Product product = this.utils.getProduct();
 		
 		when(this.gateway.findById(1l)).thenReturn(Optional.of(product));
 		this.service.remove(1l);
@@ -133,24 +133,4 @@ public class ProdutoServiceTest {
 							.hasMessage("Delete not accomplished. Product id 1 not found in our data base.");
 	}
 
-	private List<Product> getProductListMock() {
-		List<Product> produtos = new ArrayList<Product>();
-
-		Product p1 = new Product("Produto 1", 1.5, 5);
-		p1.setId(1l);
-		produtos.add(p1);
-
-		Product p2 = new Product("Produto 2", 3.5, 2);
-		p2.setId(2l);
-		produtos.add(p2);
-
-		return produtos;
-	}
-
-	private Product getProduct() {
-		Product p = new Product("Produto", 100.5, 10);
-		p.setId(1l);
-
-		return p;
-	}
 }
