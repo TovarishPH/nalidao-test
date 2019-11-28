@@ -1,5 +1,6 @@
 package com.nalidao.products.controller;
 
+import java.net.URI;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.nalidao.products.controller.converter.EntityToProductDto;
 import com.nalidao.products.controller.converter.ProductDtoToEntityConverter;
@@ -47,11 +49,13 @@ public class ProductController {
 	
 	@PostMapping
 	@Transactional
-	public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductDto productDto) {
+	public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductDto productDto, UriComponentsBuilder uriBuilder) {
 		Product product = this.converterToEntity.convert(productDto);
 		this.service.save(product);
 		productDto = this.convertToDto.convert(product);
-		return ResponseEntity.ok(productDto);
+		
+		URI uri = uriBuilder.path("/product-api/{id}").buildAndExpand(productDto.getId()).toUri();
+		return ResponseEntity.created(uri).body(productDto);
 	}
 	
 	@DeleteMapping("/{id}")
