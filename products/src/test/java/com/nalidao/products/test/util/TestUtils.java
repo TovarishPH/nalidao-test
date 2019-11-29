@@ -3,6 +3,7 @@ package com.nalidao.products.test.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nalidao.products.controller.dto.ProductDto;
 import com.nalidao.products.domain.Product;
 
 public class TestUtils {
@@ -26,5 +27,9 @@ public class TestUtils {
 		p.setId(1l);
 
 		return p;
+	}
+	
+	public ProductDto getBodyForm() {
+		 return new ProductDto("Produto", 100.5, 20);
 	}
 }
