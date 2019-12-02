@@ -62,7 +62,7 @@ public class ProductController {
 	@Transactional
 	public ResponseEntity<?> removeProduct(@PathVariable Long id) {
 		this.service.remove(id);
-		return ResponseEntity.ok("Action accomplisehd. Product id " + id + " was deleted from database.");
+		return ResponseEntity.ok("Action accomplished. Product id " + id + " was deleted from database.");
 	}
 	
 	@PutMapping("/{id}")

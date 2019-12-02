@@ -4,6 +4,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,6 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nalidao.products.controller.converter.EntityToProductDto;
+import com.nalidao.products.controller.converter.ProductDtoToEntityConverter;
 import com.nalidao.products.controller.dto.ProductDto;
 import com.nalidao.products.domain.Product;
 import com.nalidao.products.errorhandling.exception.ProductNotFoundException;
@@ -33,6 +37,12 @@ public class ProductControllerTest {
 
 	@MockBean
 	private ProductService service;
+	
+	@MockBean
+	private ProductDtoToEntityConverter converterToEntity;
+	
+	@MockBean
+	private EntityToProductDto converterToDto;
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -82,8 +92,14 @@ public class ProductControllerTest {
 	}
 	
 	@Test
-	public void testCreateProductReturnsOk() throws Exception {
+	public void testCreateProductReturnsCreated() throws Exception {
+		long id = 1;
 		ProductDto form = this.utils.getBodyForm();
+		Product product = this.utils.getProduct();
+		
+		when(this.converterToEntity.convert(form)).thenReturn(product);
+		form.setId(id);
+		when(this.converterToDto.convert(product)).thenReturn(form);
 		
 		ResultActions result = mockMvc.perform(post("/product-api")
 										.contentType(MediaType.APPLICATION_JSON)
@@ -118,6 +134,51 @@ public class ProductControllerTest {
 				.andExpect(status().isOk())
 				.andReturn();
 		
+	}
+	
+	@Test
+	public void testRemoveProductReturnsNotFound() throws Exception {
+		long id = 1;
+		
+		Mockito.doThrow(ProductNotFoundException.class).when(this.service).remove(id);;
+		
+		ResultActions result = mockMvc.perform(delete("/product-api/{id}", id)
+										.contentType(MediaType.APPLICATION_JSON));
+		
+		result.andDo(print())
+				.andExpect(status().isNotFound())
+				.andReturn();
+		
+	}
+	
+	@Test
+	public void testUpdateProductReturnsOk() throws Exception {
+		long id = 1;
+		ProductDto form = this.utils.getBodyForm();
+		
+		ResultActions result = mockMvc.perform(put("/product-api/{id}", id )
+										.contentType(MediaType.APPLICATION_JSON)
+										.content(this.mapper.writeValueAsString(form)));
+		
+		result.andDo(print())
+				.andExpect(status().isOk())
+				.andReturn();
+										
+	}
+	
+	@Test
+	public void testUpdateProductReturnsBadRequest() throws Exception {
+		long id = 1;
+		ProductDto form = new ProductDto(null, 10, 2);
+		
+		ResultActions result = mockMvc.perform(put("/product-api/{id}", id )
+										.contentType(MediaType.APPLICATION_JSON)
+										.content(this.mapper.writeValueAsString(form)));
+		
+		result.andDo(print())
+				.andExpect(status().isBadRequest())
+				.andReturn();
+										
 	}
 	
 }
