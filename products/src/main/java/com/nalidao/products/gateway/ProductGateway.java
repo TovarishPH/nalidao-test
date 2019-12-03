@@ -21,15 +21,15 @@ public class ProductGateway {
 		return this.repository.findAll();
 	}
 
-	public Optional<Product> findById(Long id) {
+	public Optional<Product> findById(final Long id) {
 		return this.repository.findById(id);
 	}
 	
-	public void save(Product product) {
+	public void save(final Product product) {
 		this.repository.save(product);
 	}
 
-	public void deleteById(Long id) {
+	public void deleteById(final Long id) {
 		this.repository.deleteById(id);
 	}
 

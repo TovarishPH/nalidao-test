@@ -43,34 +43,34 @@ public class ProductController {
 	}
 	
 	@GetMapping("/{id}")
-	public Product findProductById(@PathVariable Long id) {
+	public Product findProductById(@PathVariable final Long id) {
 		return this.service.findById(id).get();
 	}
 	
 	@PostMapping
 	@Transactional
-	public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductDto productDto, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid final ProductDto productDto, UriComponentsBuilder uriBuilder) {
 		Product product = this.converterToEntity.convert(productDto);
 		this.service.save(product);
-		productDto = this.convertToDto.convert(product);
+		ProductDto productDtoResponse = this.convertToDto.convert(product);
 		
 		URI uri = uriBuilder.path("/product-api/{id}").buildAndExpand(productDto.getId()).toUri();
-		return ResponseEntity.created(uri).body(productDto);
+		return ResponseEntity.created(uri).body(productDtoResponse);
 	}
 	
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> removeProduct(@PathVariable Long id) {
+	public ResponseEntity<?> removeProduct(@PathVariable final Long id) {
 		this.service.remove(id);
 		return ResponseEntity.ok("Action accomplished. Product id " + id + " was deleted from database.");
 	}
 	
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductDto productDto) {
+	public ResponseEntity<ProductDto> updateProduct(@PathVariable final Long id, @RequestBody @Valid final ProductDto productDto) {
 		Product product = this.converterToEntity.convert(productDto);
 		product = this.service.update(id, product);
-		productDto = this.convertToDto.convert(product);
-		return ResponseEntity.ok(productDto);
+		ProductDto productDtoResponse = this.convertToDto.convert(product);
+		return ResponseEntity.ok(productDtoResponse);
 	}
 }

@@ -22,7 +22,7 @@ public class ProductService {
 		return this.gateway.findAll();
 	}
 
-	public Optional<Product> findById(Long id) {
+	public Optional<Product> findById(final Long id) {
 		Optional<Product> produto = this.gateway.findById(id);
 		if (produto.isPresent()) {
 			return produto;
@@ -30,11 +30,11 @@ public class ProductService {
 		throw new ProductNotFoundException("Product id: " + id + " not found.");
 	}
 
-	public void save(Product product) {
+	public void save(final Product product) {
 		this.gateway.save(product);
 	}
 
-	public void remove(Long id) {
+	public void remove(final Long id) {
 		Optional<Product> product = this.gateway.findById(id);
 		if (product.isPresent()) {
 			this.gateway.deleteById(id);
@@ -44,7 +44,7 @@ public class ProductService {
 		}
 	}
 
-	public Product update(Long id, Product product) {
+	public Product update(final Long id, final Product product) {
 		Optional<Product> dbProduct = this.gateway.findById(id);
 
 		if (dbProduct.isPresent()) {
@@ -52,7 +52,7 @@ public class ProductService {
 			dbProduct.get().setPrice(product.getPrice());
 			dbProduct.get().setAmount(product.getAmount());
 			this.gateway.save(dbProduct.get());
-			return product;
+			return dbProduct.get();
 		} else {
 			throw new ProductNotFoundException("Update not accomplished. Product id: " + id + " not found.");
 		}
