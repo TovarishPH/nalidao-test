@@ -2,6 +2,7 @@ package com.nalidao.products.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -24,8 +25,12 @@ import com.nalidao.products.controller.dto.ProductDto;
 import com.nalidao.products.domain.Product;
 import com.nalidao.products.service.ProductService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("/product-api")
+@Api(value = "Product Management API")
 public class ProductController {
 
 	@Autowired
@@ -38,17 +43,22 @@ public class ProductController {
 	private EntityToProductDto convertToDto;
 	
 	@GetMapping
-	public List<Product> findAllProducts() {
-		return this.service.findAll();
+	@ApiOperation(value = "List of Products")
+	public List<ProductDto> findAllProducts() {
+		List<Product> productList = this.service.findAll();
+		List<ProductDto> productDtoList = productList.stream().map(p -> this.convertToDto.convert(p)).collect(Collectors.toList());
+		return productDtoList;
 	}
 	
 	@GetMapping("/{id}")
+	@ApiOperation(value = "Find Product by ID")
 	public Product findProductById(@PathVariable final Long id) {
 		return this.service.findById(id).get();
 	}
 	
 	@PostMapping
 	@Transactional
+	@ApiOperation(value = "Create Product in Database")
 	public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid final ProductDto productDto, UriComponentsBuilder uriBuilder) {
 		Product product = this.converterToEntity.convert(productDto);
 		this.service.save(product);
@@ -60,6 +70,7 @@ public class ProductController {
 	
 	@DeleteMapping("/{id}")
 	@Transactional
+	@ApiOperation(value = "Removing Product from Database")
 	public ResponseEntity<?> removeProduct(@PathVariable final Long id) {
 		this.service.remove(id);
 		return ResponseEntity.ok("Action accomplished. Product id " + id + " was deleted from database.");
@@ -67,6 +78,7 @@ public class ProductController {
 	
 	@PutMapping("/{id}")
 	@Transactional
+	@ApiOperation(value = "Updating Product Information")
 	public ResponseEntity<ProductDto> updateProduct(@PathVariable final Long id, @RequestBody @Valid final ProductDto productDto) {
 		Product product = this.converterToEntity.convert(productDto);
 		product = this.service.update(id, product);
