@@ -24,7 +24,6 @@ public class SwaggerConfig {
 					.apis(RequestHandlerSelectors.basePackage("com.nalidao.products"))
 					.paths(PathSelectors.ant("/**"))
 					.build()
-					.ignoredParameterTypes(Product.class, ProductDto.class)
 					.apiInfo(this.productApiInfo());
 	}
 	
