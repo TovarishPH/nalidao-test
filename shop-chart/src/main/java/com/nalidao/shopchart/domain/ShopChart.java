@@ -7,7 +7,9 @@ import lombok.Data;
 @Data
 public class ShopChart {
 
-	private long id;
+	private Long id;
+	
+	private Long customerId;
 	
 	private Customer customer;
 	
