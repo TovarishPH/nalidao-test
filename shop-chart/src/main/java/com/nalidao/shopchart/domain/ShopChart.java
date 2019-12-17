@@ -6,16 +6,20 @@ import javax.persistence.Id;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @Document
+@AllArgsConstructor
 public class ShopChart {
 
 	@Id
 	private Long id;
 	
-	private Long customerId;
+	private String name;
 	
-	private List<Product> products;
+//	private Long customerId;
+	
+//	private List<Product> products;
 }

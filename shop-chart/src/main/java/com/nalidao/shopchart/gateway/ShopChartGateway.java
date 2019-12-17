@@ -25,5 +25,11 @@ public class ShopChartGateway {
 	public Optional<ShopChart> findById(final Long id) {
 		return this.repository.findById(id);
 	}
+
+	public Long createShopChart(ShopChart shopChart) {
+		// TODO Auto-generated method stub
+		this.repository.save(shopChart);
+		return null;
+	}
 	
 }
