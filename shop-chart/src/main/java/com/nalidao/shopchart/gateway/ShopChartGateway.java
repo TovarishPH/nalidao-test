@@ -1,5 +1,6 @@
 package com.nalidao.shopchart.gateway;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,14 +23,16 @@ public class ShopChartGateway {
 		return this.repository.findAll();
 	}
 
-	public Optional<ShopChart> findById(final Long id) {
+	public Optional<ShopChart> findById(final BigInteger id) {
 		return this.repository.findById(id);
 	}
 
-	public Long createShopChart(ShopChart shopChart) {
-		// TODO Auto-generated method stub
+	public void createShopChart(ShopChart shopChart) {
 		this.repository.save(shopChart);
-		return null;
+	}
+
+	public void remove(BigInteger id) {
+		this.repository.deleteById(id);
 	}
 	
 }

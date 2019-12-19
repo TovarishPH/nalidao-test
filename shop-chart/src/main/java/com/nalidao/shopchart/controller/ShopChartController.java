@@ -1,12 +1,17 @@
 package com.nalidao.shopchart.controller;
 
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,20 +49,30 @@ public class ShopChartController {
 	public List<ShopChart> findAllShopChart() {
 		return this.service.findAll();
 	}
+	
+	@GetMapping
+	public List<ShopChart> getAllShopChartList() {
+		return this.service.findAll();
+	}
 
 	@GetMapping("/{id}")
-	public ShopChart findShopChartById(final Long id) {
+	public ShopChart findShopChartById(@PathVariable final BigInteger id) {
 		return this.service.findById(id).get();
 	}
-	
-	public ResponseEntity<ShopChartDto> createShopChart(@RequestBody ShopChartDto dto, UriComponentsBuilder builder) {
+
+	@PostMapping
+	public ResponseEntity<ShopChartDto> createShopChart(@RequestBody @Valid final ShopChartDto dto, UriComponentsBuilder builder) {
 		ShopChart shopChart = this.converterToEntity.convert(dto);
-		Long shopChartId = this.service.createShopChart(shopChart);
-		
+		this.service.createShopChart(shopChart);
 		ShopChartDto dtoResponse = this.converterToDto.convert(shopChart);
 		
 		URI uri = builder.path("/shop-chart/{id}").buildAndExpand(dtoResponse.getId()).toUri();
-		
 		return ResponseEntity.created(uri).body(dtoResponse);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> removeShopChart(@PathVariable final BigInteger id) {
+		this.service.remove(id);
+		return ResponseEntity.ok("ShopChart id " + id + " has been removed.");
 	}
 }

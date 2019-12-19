@@ -1,5 +1,6 @@
 package com.nalidao.shopchart.service;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,13 +32,17 @@ public class ShopChartService {
 		return this.gateway.findAll();
 	}
 	
-	public Optional<ShopChart> findById(final Long id) {
+	public Optional<ShopChart> findById(final BigInteger id) {
 		return this.gateway.findById(id);
 	}
 
-	public Long createShopChart(ShopChart shopChart) {
-		Long shopChartId = this.gateway.createShopChart(shopChart);
-		return shopChartId;
+	public void createShopChart(ShopChart shopChart) {
+		this.gateway.createShopChart(shopChart);
+	}
+
+	public void remove(BigInteger id) {
+		this.gateway.remove(id);
+		
 	}
 
 }
