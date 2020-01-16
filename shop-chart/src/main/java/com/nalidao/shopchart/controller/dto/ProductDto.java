@@ -1,15 +1,17 @@
 package com.nalidao.shopchart.controller.dto;
 
-import java.math.BigInteger;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class FormInDto {
+public class ProductDto {
 
-	private BigInteger id;
-	
-	private ProductDto productDto;
+	private long id;
+
+	private String name;
+
+	private double price;
+
+	private long amount;
 }

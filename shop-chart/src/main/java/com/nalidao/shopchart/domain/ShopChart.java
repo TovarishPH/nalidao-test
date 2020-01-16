@@ -1,9 +1,8 @@
 package com.nalidao.shopchart.domain;
 
 import java.math.BigInteger;
+import java.util.List;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,9 +18,5 @@ public class ShopChart {
 	@Id
 	private BigInteger id;
 	
-	private String name;
-	
-//	private Long customerId;
-	
-//	private List<Product> products;
+	private List<Product> productList;
 }

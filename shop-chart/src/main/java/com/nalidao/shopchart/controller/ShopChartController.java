@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.nalidao.shopchart.controller.dto.FormInDto;
 import com.nalidao.shopchart.controller.dto.ShopChartDto;
 import com.nalidao.shopchart.converter.ShopChartDtoConverterToEntity;
+import com.nalidao.shopchart.converter.FormInDtoToDtoConverter;
 import com.nalidao.shopchart.converter.ShopChartConverterToDto;
 import com.nalidao.shopchart.domain.Product;
 import com.nalidao.shopchart.domain.ShopChart;
@@ -37,6 +39,8 @@ public class ShopChartController {
 	@Autowired
 	private ShopChartConverterToDto converterToDto;
 	
+	@Autowired
+	private FormInDtoToDtoConverter formConverter;
 	
 	
 	//TESTE DE CONSUMER
@@ -44,10 +48,6 @@ public class ShopChartController {
 	public ResponseEntity<Product> getProduct(@PathVariable final Long id) {
 		Product prod = this.service.getProductById(id);
 		return ResponseEntity.ok(prod);
-	}
-	
-	public List<ShopChart> findAllShopChart() {
-		return this.service.findAll();
 	}
 	
 	@GetMapping
@@ -61,7 +61,9 @@ public class ShopChartController {
 	}
 
 	@PostMapping
-	public ResponseEntity<ShopChartDto> createShopChart(@RequestBody @Valid final ShopChartDto dto, UriComponentsBuilder builder) {
+	public ResponseEntity<ShopChartDto> createShopChart(@RequestBody @Valid final FormInDto formDto, UriComponentsBuilder builder) {
+		formDto.setId(null);
+		ShopChartDto dto = this.formConverter.convert(formDto);
 		ShopChart shopChart = this.converterToEntity.convert(dto);
 		this.service.createShopChart(shopChart);
 		ShopChartDto dtoResponse = this.converterToDto.convert(shopChart);
