@@ -45,9 +45,7 @@ public class ShopChartService {
 		long productId = shopChart.getProductList().get(0).getId();
 		if(this.validateProduct(productId)) {
 			this.gateway.createShopChart(shopChart);
-		} else {
-			throw new ProductNotFoundexception("Product id " + productId + " not found.");
-		}
+		} 
 	}
 
 	public void remove(BigInteger id) {
@@ -63,9 +61,10 @@ public class ShopChartService {
 	private boolean validateProduct(Long productId) {
 		Product product = this.consumer.getProduct(productId);
 		if(product != null) {
+			System.out.println(product.toString());
 			return true;
 		}
-		return false;
+		throw new ProductNotFoundexception("Product id " + productId + " not found.");
 	}
 
 }

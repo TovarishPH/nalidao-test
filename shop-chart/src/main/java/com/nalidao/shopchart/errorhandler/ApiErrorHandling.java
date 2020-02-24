@@ -25,7 +25,7 @@ public class ApiErrorHandling {
 	}
 	
 	@ExceptionHandler(ProductNotFoundexception.class)
-	private ResponseEntity<ApiErrorDetails> handlePuctNotFound(ProductNotFoundexception e) {
+	private ResponseEntity<ApiErrorDetails> handleProductNotFound(ProductNotFoundexception e) {
 		ApiErrorDetails details = new ApiErrorDetails("Product not found.",
 													HttpStatus.NOT_FOUND.toString(),
 													e.getLocalizedMessage(),
